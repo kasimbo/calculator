@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pink Calculator</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffc0cb, #ff69b4);
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        .calculator {
+            background: #ffb6d9;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 320px;
+        }
+
+        #display {
+            background: #fff0f5;
+            color: #ff1493;
+            font-size: 2em;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: right;
+            margin-bottom: 15px;
+            border: 2px solid #ff69b4;
+            min-height: 50px;
+            word-break: break-all;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            padding: 15px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .num {
+            background: #fff0f5;
+            color: #ff1493;
+        }
+
+        .num:active {
+            background: #ffe4f0;
+        }
+
+        .op {
+            background: #ff69b4;
+            color: white;
+        }
+
+        .op:active {
+            background: #ff1493;
+        }
+
+        .eq {
+            background: #ff1493;
+            color: white;
+            grid-column: span 2;
+        }
+
+        .eq:active {
+            background: #c71585;
+        }
+
+        .clr {
+            background: #ffb6d9;
+            color: white;
+            grid-column: span 2;
+        }
+
+        .clr:active {
+            background: #ff69b4;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div id="display">0</div>
+        <div class="buttons">
+            <button class="clr" onclick="clr()">C</button>
+            <button class="op" onclick="op('/')">/</button>
+            <button class="op" onclick="op('*')">*</button>
+            
+            <button class="num" onclick="num('7')">7</button>
+            <button class="num" onclick="num('8')">8</button>
+            <button class="num" onclick="num('9')">9</button>
+            <button class="op" onclick="op('-')">-</button>
+            
+            <button class="num" onclick="num('4')">4</button>
+            <button class="num" onclick="num('5')">5</button>
+            <button class="num" onclick="num('6')">6</button>
+            <button class="op" onclick="op('+')">+</button>
+            
+            <button class="num" onclick="num('1')">1</button>
+            <button class="num" onclick="num('2')">2</button>
+            <button class="num" onclick="num('3')">3</button>
+            <button class="num" onclick="num('.')">.</button>
+            
+            <button class="num" onclick="num('0')" style="grid-column: span 2;">0</button>
+            <button class="eq" onclick="eq()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById('display');
+        let currentValue = '0';
+        let previousValue = '';
+        let operator = '';
+        let shouldResetDisplay = false;
+
+        function num(n) {
+            if (shouldResetDisplay) {
+                currentValue = n;
+                shouldResetDisplay = false;
+            } else {
+                currentValue = currentValue === '0' ? n : currentValue + n;
+            }
+            updateDisplay();
+        }
+
+        function op(o) {
+            if (operator && !shouldResetDisplay) {
+                eq();
+            }
+            previousValue = currentValue;
+            operator = o;
+            shouldResetDisplay = true;
+            updateDisplay();
+        }
+
+        function eq() {
+            if (operator && previousValue !== '' && currentValue !== '') {
+                let result;
+                const prev = parseFloat(previousValue);
+                const curr = parseFloat(currentValue);
+
+                switch(operator) {
+                    case '+':
+                        result = prev + curr;
+                        break;
+                    case '-':
+                        result = prev - curr;
+                        break;
+                    case '*':
+                        result = prev * curr;
+                        break;
+                    case '/':
+                        result = curr !== 0 ? prev / curr : 'Error';
+                        break;
+                    default:
+                        return;
+                }
+
+                currentValue = result.toString();
+                operator = '';
+                previousValue = '';
+                shouldResetDisplay = true;
+                updateDisplay();
+            }
+        }
+
+        function clr() {
+            currentValue = '0';
+            previousValue = '';
+            operator = '';
+            shouldResetDisplay = false;
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            display.innerText = currentValue;
+        }
+    </script>
+</body>
+</html>
